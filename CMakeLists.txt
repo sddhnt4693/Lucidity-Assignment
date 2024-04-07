@@ -4,4 +4,6 @@ project(Assignment)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(Assignment main.cpp
+        UnitTests/geoHashTest.cpp
+        UnitTests/geoHashTest.cpp
 )

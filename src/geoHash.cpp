@@ -5,11 +5,11 @@ using namespace std;
 
 const int SPEED = 20;
 
+
 typedef pair<int, int> pii;
 class GeoHash {
     public :
-    static vector<vector<pii>> geoHashGraph;
-
+    vector<vector<pii>> geoHashGraph;
     map<string, int> idMapper;
     map<int, int> prerequisiteMap;
 
@@ -18,11 +18,17 @@ class GeoHash {
                           const vector<Customer>& customerList) {
         initialiseMapping(deliveryPartner, restaurantList, customerList);
     }
-    vector<vector<pii>> getGeoHash(const DeliveryPartner& deliveryPartner,
+    vector<vector<pii>> getGeoHashGraph()
+    {
+        return geoHashGraph;
+    }
+    void makeGeoHash(const DeliveryPartner& deliveryPartner,
                                    const vector<Restaurant>& restaurantList,
                                    const vector<Customer>& customerList) {
+        int nodes = 1 + restaurantList.size() + customerList.size();
+        vector<pair<int,int>>temp;
+        geoHashGraph.assign(nodes, temp);
         populateGeoHash(deliveryPartner, restaurantList, customerList);
-        return geoHashGraph;
     }
 
     private :
@@ -50,30 +56,32 @@ class GeoHash {
     void populateGeoHash(const DeliveryPartner& delPartner,
                          const vector<Restaurant>& restaurantList,
                          const vector<Customer>& customerList) {
-
-        for(const auto& restaurant : restaurantList) {
+        for(const auto restaurant : restaurantList) {
             double distance = calculateHaversineDist({delPartner.latitude, delPartner.longitude},
                                                      {restaurant.latitude, restaurant.longitude});
             double timeRequired = distance/SPEED * 60;
             timeRequired += restaurant.prepTime;
-            geoHashGraph[idMapper[delPartner.delPartnerId]].push_back({idMapper[restaurant.restId], timeRequired});
+
+            geoHashGraph[idMapper[delPartner.delPartnerId]].emplace_back(idMapper[restaurant.restId], timeRequired);
+            geoHashGraph[idMapper[restaurant.restId]].emplace_back(idMapper[delPartner.delPartnerId], timeRequired);
         }
 
-        for(const auto& restaurant : restaurantList) {
-            for(const auto& customer : customerList) {
+        for(auto restaurant : restaurantList) {
+            for(auto customer : customerList) {
                 double distance = calculateHaversineDist({customer.latitude, customer.longitude},
                                                          {restaurant.latitude, restaurant.longitude});
                 double timeRequired = distance/SPEED * 60;
-
-                geoHashGraph[idMapper[customer.customerId]].push_back({idMapper[restaurant.restId], timeRequired});
+                geoHashGraph[idMapper[customer.customerId]].emplace_back(idMapper[restaurant.restId], timeRequired);
+                geoHashGraph[idMapper[restaurant.restId]].emplace_back(idMapper[customer.customerId], timeRequired);
             }
         }
-
-        for(const auto& customer : customerList) {
+        for(auto customer : customerList) {
             double distance = calculateHaversineDist({delPartner.latitude, delPartner.longitude},
                                                      {customer.latitude, customer.longitude});
             double timeRequired = distance/SPEED * 60;
-            geoHashGraph[idMapper[delPartner.delPartnerId]].push_back({idMapper[customer.restId], timeRequired});
+
+            geoHashGraph[idMapper[delPartner.delPartnerId]].emplace_back(idMapper[customer.customerId], timeRequired);
+            geoHashGraph[idMapper[customer.customerId]].emplace_back(idMapper[delPartner.delPartnerId], timeRequired);
         }
 
         for (int i = 0; i < customerList.size()-1; i++) {
@@ -81,7 +89,8 @@ class GeoHash {
                 double distance = calculateHaversineDist({customerList[i].latitude, customerList[i].longitude},
                                                          {customerList[j].latitude, customerList[j].longitude});
                 double timeRequired = distance/SPEED * 60;
-                geoHashGraph[idMapper[customerList[i].customerId]].push_back({idMapper[customerList[j].customerId], timeRequired});
+                geoHashGraph[idMapper[customerList[i].customerId]].emplace_back(idMapper[customerList[j].customerId], timeRequired);
+                geoHashGraph[idMapper[customerList[j].customerId]].emplace_back(idMapper[customerList[i].customerId], timeRequired);
             }
         }
 
@@ -90,7 +99,9 @@ class GeoHash {
                 double distance = calculateHaversineDist({restaurantList[i].latitude, restaurantList[i].longitude},
                                                          {restaurantList[j].latitude, restaurantList[j].longitude});
                 double timeRequired = distance/SPEED * 60;
-                geoHashGraph[idMapper[restaurantList[i].restId]].push_back({idMapper[restaurantList[j].restId], timeRequired});
+
+                geoHashGraph[idMapper[restaurantList[i].restId]].emplace_back(idMapper[restaurantList[j].restId], timeRequired);
+                geoHashGraph[idMapper[restaurantList[j].restId]].emplace_back(idMapper[restaurantList[i].restId], timeRequired);
             }
         }
     }

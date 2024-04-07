@@ -8,7 +8,13 @@ public :
     string delPartnerId;
     double latitude;
     double longitude;
-    DeliveryPartner(string id, double lat, double lon) : delPartnerId(std::move(id)), latitude(lat), longitude(lon){}
+    DeliveryPartner(string id, double lat, double lon)
+    {
+        latitude = lat;
+        delPartnerId = id;
+        longitude = lon;
+    }
+    //DeliveryPartner(string id, double lat, double lon) : delPartnerId(std::move(id)), latitude(lat), longitude(lon){}
 };
 
 class Restaurant {
@@ -28,5 +34,5 @@ public:
     double latitude;
     double longitude;
     Customer(string cId, string rId ,double lat, double lon) : customerId(std::move(cId)),
-                            restId(restId), latitude(lat), longitude(lon) {}
+                            restId(std::move(rId)), latitude(lat), longitude(lon) {}
 };
