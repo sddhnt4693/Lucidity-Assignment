@@ -6,14 +6,17 @@ using namespace std;
 typedef pair<int, int> pii;
 class GeoHash {
     public :
-    vector<vector<pii>> geoHashGraph;
+    static vector<vector<pii>> geoHashGraph;
 
-    void getGeoHash() {
-
+    vector<vector<pii>> getGeoHash(DeliveryPartner deliveryPartner,
+                                          vector<Restaurant> restaurantList,
+                                          vector<Customer> customerList) {
+        populateGeoHash(deliveryPartner, restaurantList, customerList);
+        return geoHashGraph;
     }
 
     private :
-    void populateGeoHash(vector<DeliveryPartner> delPartnerList,
+    void populateGeoHash(DeliveryPartner delPartner,
                          vector<Restaurant> restaurantList,
                          vector<Customer> customerList) {
 
