@@ -11,7 +11,7 @@ class GeoHash {
     static vector<vector<pii>> geoHashGraph;
 
     map<string, int> idMapper;
-    map<string, string> orderMap;
+    map<int, int> prerequisiteMap;
 
     void initGraphMapping(const DeliveryPartner& deliveryPartner,
                           const vector<Restaurant>& restaurantList,
@@ -39,9 +39,12 @@ class GeoHash {
         }
 
         for(const auto& customer : customerList) {
-            orderMap[customer.customerId] = customer.restId;
             idMapper[customer.customerId] = start;
             start++;
+        }
+
+        for(const auto& customer : customerList) {
+            prerequisiteMap[idMapper[customer.customerId]] = idMapper[customer.restId];
         }
     }
     void populateGeoHash(const DeliveryPartner& delPartner,
@@ -71,6 +74,24 @@ class GeoHash {
                                                      {customer.latitude, customer.longitude});
             double timeRequired = distance/SPEED * 60;
             geoHashGraph[idMapper[delPartner.delPartnerId]].push_back({idMapper[customer.restId], timeRequired});
+        }
+
+        for (int i = 0; i < customerList.size()-1; i++) {
+            for(int j = i+1; j< customerList.size(); j++) {
+                double distance = calculateHaversineDist({customerList[i].latitude, customerList[i].longitude},
+                                                         {customerList[j].latitude, customerList[j].longitude});
+                double timeRequired = distance/SPEED * 60;
+                geoHashGraph[idMapper[customerList[i].customerId]].push_back({idMapper[customerList[j].customerId], timeRequired});
+            }
+        }
+
+        for (int i = 0; i < restaurantList.size()-1; i++) {
+            for(int j = i+1; j< restaurantList.size(); j++) {
+                double distance = calculateHaversineDist({restaurantList[i].latitude, restaurantList[i].longitude},
+                                                         {restaurantList[j].latitude, restaurantList[j].longitude});
+                double timeRequired = distance/SPEED * 60;
+                geoHashGraph[idMapper[restaurantList[i].restId]].push_back({idMapper[restaurantList[j].restId], timeRequired});
+            }
         }
     }
 
