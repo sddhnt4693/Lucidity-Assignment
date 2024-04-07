@@ -46,6 +46,7 @@ int main() {
         Restaurant restaurant(id, lat, lon, time);
         restaurantList.push_back(restaurant);
     }
+
     int customerCount;
     cout<<"Insert number of customers"<<endl;
     cin>>customerCount;

@@ -13,22 +13,22 @@ class GeoHash {
     map<string, int> idMapper;
     map<string, string> orderMap;
 
-    void initGraphMapping(DeliveryPartner deliveryPartner,
-                          vector<Restaurant> restaurantList,
-                          vector<Customer> customerList) {
+    void initGraphMapping(const DeliveryPartner& deliveryPartner,
+                          const vector<Restaurant>& restaurantList,
+                          const vector<Customer>& customerList) {
         initialiseMapping(deliveryPartner, restaurantList, customerList);
     }
-    vector<vector<pii>> getGeoHash(DeliveryPartner deliveryPartner,
-                                          vector<Restaurant> restaurantList,
-                                          vector<Customer> customerList) {
+    vector<vector<pii>> getGeoHash(const DeliveryPartner& deliveryPartner,
+                                   const vector<Restaurant>& restaurantList,
+                                   const vector<Customer>& customerList) {
         populateGeoHash(deliveryPartner, restaurantList, customerList);
         return geoHashGraph;
     }
 
     private :
-    void initialiseMapping(DeliveryPartner deliveryPartner,
-                           vector<Restaurant> restaurantList,
-                           vector<Customer> customerList) {
+    void initialiseMapping(const DeliveryPartner& deliveryPartner,
+                           const vector<Restaurant>& restaurantList,
+                           const vector<Customer>& customerList) {
         int start = 0;
         idMapper[deliveryPartner.delPartnerId] = start;
         start++;
@@ -44,37 +44,37 @@ class GeoHash {
             start++;
         }
     }
-    void populateGeoHash(DeliveryPartner delPartner,
-                         vector<Restaurant> restaurantList,
-                         vector<Customer> customerList) {
+    void populateGeoHash(const DeliveryPartner& delPartner,
+                         const vector<Restaurant>& restaurantList,
+                         const vector<Customer>& customerList) {
 
-        for(auto restaurant : restaurantList) {
+        for(const auto& restaurant : restaurantList) {
             double distance = calculateHaversineDist({delPartner.latitude, delPartner.longitude},
                                                      {restaurant.latitude, restaurant.longitude});
-            double timeRequired = distance/SPEED;
+            double timeRequired = distance/SPEED * 60;
             timeRequired += restaurant.prepTime;
             geoHashGraph[idMapper[delPartner.delPartnerId]].push_back({idMapper[restaurant.restId], timeRequired});
         }
 
-        for(auto restaurant : restaurantList) {
-            for(auto customer : customerList) {
+        for(const auto& restaurant : restaurantList) {
+            for(const auto& customer : customerList) {
                 double distance = calculateHaversineDist({customer.latitude, customer.longitude},
                                                          {restaurant.latitude, restaurant.longitude});
-                double timeRequired = distance/SPEED;
+                double timeRequired = distance/SPEED * 60;
 
                 geoHashGraph[idMapper[customer.customerId]].push_back({idMapper[restaurant.restId], timeRequired});
             }
         }
 
-        for(auto customer : customerList) {
+        for(const auto& customer : customerList) {
             double distance = calculateHaversineDist({delPartner.latitude, delPartner.longitude},
                                                      {customer.latitude, customer.longitude});
-            double timeRequired = distance/SPEED;
+            double timeRequired = distance/SPEED * 60;
             geoHashGraph[idMapper[delPartner.delPartnerId]].push_back({idMapper[customer.restId], timeRequired});
         }
     }
 
-    double calculateHaversineDist (pair<double, double> source,
+    static double calculateHaversineDist (pair<double, double> source,
                                         pair<double, double> dest) {
         double lat1 = source.first, lon1 = source.second;
         double lat2 = dest.first, lon2 = dest.second;
