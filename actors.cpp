@@ -1,27 +1,34 @@
+#include <bits/stdc++.h>
+
+#include <utility>
+using namespace std;
+
 class DeliveryPartner {
 public :
     bool isDelPartner;
+    string delPartnerId;
     double latitude;
     double longitude;
-    DeliveryPartner(double lat, double lon) : latitude(lat), longitude(lon), isDelPartner(true) {}
+    DeliveryPartner(string id, double lat, double lon) : delPartnerId(std::move(id)), latitude(lat), longitude(lon), isDelPartner(true) {}
 };
 
 class Restaurant {
 public:
     bool isRestaurant;
-    int restId;
+    string restId;
     double latitude;
     double longitude;
     double prepTime;
-    Restaurant(int id, double lat, double lon, double time) : restId(id), latitude(lat), longitude(lon),
+    Restaurant(string id, double lat, double lon, double time) : restId(id), latitude(lat), longitude(lon),
                                     prepTime(time), isRestaurant(true) {}
 };
 
 class Customer {
 public:
-    int custId;
+    string customerId;
+    string restId;
     double latitude;
     double longitude;
-    Customer(int id, double lat, double lon) : custId(id),
-                            latitude(lat), longitude(lon) {}
+    Customer(string cId, string rId ,double lat, double lon) : customerId(cId),
+                            restId(restId), latitude(lat), longitude(lon) {}
 };
