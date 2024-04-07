@@ -6,19 +6,20 @@ using namespace std;
 const int SPEED = 20;
 
 
-typedef pair<int, int> pii;
+typedef pair<int, double> pid;
 class GeoHash {
     public :
-    vector<vector<pii>> geoHashGraph;
+    vector<vector<pid>> geoHashGraph;
     map<string, int> idMapper;
     map<int, int> prerequisiteMap;
+    map<int, string> reverseMapper;
 
     void initGraphMapping(const DeliveryPartner& deliveryPartner,
                           const vector<Restaurant>& restaurantList,
                           const vector<Customer>& customerList) {
         initialiseMapping(deliveryPartner, restaurantList, customerList);
     }
-    vector<vector<pii>> getGeoHashGraph()
+    vector<vector<pid>> getGeoHashGraph()
     {
         return geoHashGraph;
     }
@@ -26,7 +27,7 @@ class GeoHash {
                                    const vector<Restaurant>& restaurantList,
                                    const vector<Customer>& customerList) {
         int nodes = 1 + restaurantList.size() + customerList.size();
-        vector<pair<int,int>>temp;
+        vector<pair<int,double>> temp;
         geoHashGraph.assign(nodes, temp);
         populateGeoHash(deliveryPartner, restaurantList, customerList);
     }
@@ -37,15 +38,18 @@ class GeoHash {
                            const vector<Customer>& customerList) {
         int start = 0;
         idMapper[deliveryPartner.delPartnerId] = start;
+        reverseMapper[start] = deliveryPartner.delPartnerId;
         start++;
 
         for(const auto& restaurant : restaurantList) {
             idMapper[restaurant.restId] = start;
+            reverseMapper[start] = restaurant.restId;
             start++;
         }
 
         for(const auto& customer : customerList) {
             idMapper[customer.customerId] = start;
+            reverseMapper[start] = customer.customerId;
             start++;
         }
 

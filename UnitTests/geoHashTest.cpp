@@ -20,7 +20,7 @@ public:
         customerList.push_back(customer1);
         geoHash.initGraphMapping(deliveryPartner, restaurantList, customerList);
         geoHash.makeGeoHash(deliveryPartner,restaurantList,customerList);
-        vector<vector<pair<int,int>>> graph = geoHash.getGeoHashGraph();
+        vector<vector<pair<int,double>>> graph = geoHash.getGeoHashGraph();
         for(auto v:graph) {
             for(int i=0;i<v.size();i++) {
                 cout<<i<<" "<<v[i].first<<" "<<v[i].second;

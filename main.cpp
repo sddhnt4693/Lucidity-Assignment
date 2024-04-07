@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "src/geoHash.cpp"
+#include "src/RouteOptimiser.cpp"
 
 using namespace std;
 
@@ -9,9 +10,6 @@ vector<Customer> customerList;
 bool checkLatLong (double lat, double lon) {
     return lat <= 90 && lat >= -90 && lon <= 180 && lon >= -180;
 }
-
-map<string,int>mapping;
-int lastUsed = 0;
 
 int main() {
     double delPartnerLatitude, delPartnerLongitude;
@@ -60,8 +58,14 @@ int main() {
     GeoHash geoHash;
     geoHash.initGraphMapping(deliveryPartner, restaurantList, customerList);
     geoHash.makeGeoHash(deliveryPartner,restaurantList,customerList);
-    vector<vector<pair<int, int>>> deliveryGraph = geoHash.getGeoHashGraph();
+
+    vector<vector<pair<int, double>>> deliveryGraph = geoHash.getGeoHashGraph();
     map<int, int> orderMap = geoHash.prerequisiteMap;
     map<string, int> encodingMap = geoHash.idMapper;
+    map<int, string> reverseMap = geoHash.reverseMapper;
 
+    int nodes = 1 + restaurantCount + customerCount;
+
+    RouteOptimise routeOptimise;
+    routeOptimise.OptimalPath(nodes, deliveryGraph, orderMap, reverseMap);
 }
