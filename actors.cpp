@@ -3,7 +3,7 @@ public :
     bool isDelPartner;
     double latitude;
     double longitude;
-    DeliveryPartner(int lat, int lon) : latitude(lat), longitude(lon), isDelPartner(true) {}
+    DeliveryPartner(double lat, double lon) : latitude(lat), longitude(lon), isDelPartner(true) {}
 };
 
 class Restaurant {
