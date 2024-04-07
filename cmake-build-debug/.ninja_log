@@ -1,0 +1,12 @@
+# ninja log v5
+4	2373	7342127172425171	CMakeFiles/Assignment.dir/UnitTests/geoHashTest.cpp.obj	255b9d1f15ee18dc
+2504	2750	7342127869096226	Assignment.exe	322eb6249faa5116
+4	2503	7342127866666089	CMakeFiles/Assignment.dir/main.cpp.obj	848fac16979fc35d
+1	224	7342128196888047	build.ninja	38bccae10e840cea
+4	2656	7342129818161042	CMakeFiles/Assignment.dir/main.cpp.obj	848fac16979fc35d
+2657	2860	7342129820151030	Assignment.exe	322eb6249faa5116
+5	2598	7342130154344386	CMakeFiles/Assignment.dir/main.cpp.obj	848fac16979fc35d
+2599	2812	7342130156444911	Assignment.exe	322eb6249faa5116
+13	2301	7342133419983267	CMakeFiles/Assignment.dir/UnitTests/geoHashTest.cpp.obj	255b9d1f15ee18dc
+5	2762	7342133424556537	CMakeFiles/Assignment.dir/main.cpp.obj	848fac16979fc35d
+2762	2962	7342133426546392	Assignment.exe	322eb6249faa5116
