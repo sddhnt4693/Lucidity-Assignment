@@ -66,5 +66,6 @@ int main() {
     }
     GeoHash geoHash;
     geoHash.initGraphMapping(deliveryPartner, restaurantList, customerList);
+
     vector<vector<pair<int, int>>> deliveryGraph = geoHash.getGeoHash(deliveryPartner, restaurantList, customerList);
 }
