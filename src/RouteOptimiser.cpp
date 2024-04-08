@@ -8,7 +8,6 @@ public:
                                map<int, int> orderMap, map<int, string> reverseMap) {
 
         vector<vector<double>> distMatrix = getDistanceMatrix(nodes, deliveryGraph);
-
         initCache(nodes);
         vector<int> optimalPathNodes = getOptimalPathNodes(nodes, distMatrix, orderMap);
         vector<string> optimalPath = getOptimalPathFromNodes(nodes,optimalPathNodes,reverseMap);
@@ -27,7 +26,7 @@ private:
 
     bool checkBitSet(int val, int bit)
     {
-        return ( val & ((1<<bit)) );
+        return ( ((1<<bit)&val) );
     }
 
     vector<int> getOptimalPathNodes(int nodes, vector<vector<double>> distMatrix,
