@@ -23,6 +23,7 @@ IDs of respective actors will be printed in order they need to be visited : eg -
 
 **NOTE**
 Testing for this was done manually and the method is mentioned in the doc
+This was because of the lack of testing framework resources in c++ and my pc not being able to download google test packages.
 sample test case : 
 ```
 dp 12.1 70.1
