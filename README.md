@@ -17,3 +17,6 @@ cust2 rest2 12.5 70.5                     // customerId, restaurantId of restaur
 ```
 Approach : 
 please check this link for approach : https://docs.google.com/document/d/1g-ECAQyCoVBSndyiui6xqqZj2a2MpjBjs2fpCqxyk_k/edit
+
+Output format - 
+IDs of respective actors will be printed in order they need to be visited : eg - rest1 rest2 cust1 cust2
