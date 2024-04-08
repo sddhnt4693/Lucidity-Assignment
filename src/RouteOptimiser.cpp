@@ -40,10 +40,7 @@ private:
             if ((i & (i - 1)) == 0)
                 continue;
             for (int j = 0; j < nodes; j++) {
-                //check if jth node is set in current mask
                 if (((1 << j) & i) > 0) {
-                    //remove jth bit from current mask
-                    //if visiting j, then orderMap[j] bit must be set, else make max distance
                     if (!checkBitSet(i, (1 << orderMap[j])))
                         continue;
 
@@ -67,7 +64,9 @@ private:
                 currentVertex = i;
             }
         }
+
         vector<int> path;
+
         int mask = (1 << nodes) - 1;
         while (currentVertex) {
             path.push_back(currentVertex);
