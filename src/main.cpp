@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-#include "src/geoHash.cpp"
-#include "src/RouteOptimiser.cpp"
+#include "geoHash.cpp"
+#include "RouteOptimiser.cpp"
 
 using namespace std;
 

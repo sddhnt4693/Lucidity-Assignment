@@ -49,17 +49,11 @@ cmake_ninja_workdir = C$:/Users/swarna$ sinha/CLionProjects/Assignment/cmake-bui
 
 build cmake_object_order_depends_target_Assignment: phony || CMakeFiles/Assignment.dir
 
-build CMakeFiles/Assignment.dir/main.cpp.obj: CXX_COMPILER__Assignment_unscanned_Debug C$:/Users/swarna$ sinha/CLionProjects/Assignment/main.cpp || cmake_object_order_depends_target_Assignment
-  DEP_FILE = CMakeFiles\Assignment.dir\main.cpp.obj.d
+build CMakeFiles/Assignment.dir/src/main.cpp.obj: CXX_COMPILER__Assignment_unscanned_Debug C$:/Users/swarna$ sinha/CLionProjects/Assignment/src/main.cpp || cmake_object_order_depends_target_Assignment
+  DEP_FILE = CMakeFiles\Assignment.dir\src\main.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\Assignment.dir
-  OBJECT_FILE_DIR = CMakeFiles\Assignment.dir
-
-build CMakeFiles/Assignment.dir/UnitTests/geoHashTest.cpp.obj: CXX_COMPILER__Assignment_unscanned_Debug C$:/Users/swarna$ sinha/CLionProjects/Assignment/UnitTests/geoHashTest.cpp || cmake_object_order_depends_target_Assignment
-  DEP_FILE = CMakeFiles\Assignment.dir\UnitTests\geoHashTest.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\Assignment.dir
-  OBJECT_FILE_DIR = CMakeFiles\Assignment.dir\UnitTests
+  OBJECT_FILE_DIR = CMakeFiles\Assignment.dir\src
 
 
 # =============================================================================
@@ -69,7 +63,7 @@ build CMakeFiles/Assignment.dir/UnitTests/geoHashTest.cpp.obj: CXX_COMPILER__Ass
 #############################################
 # Link the executable Assignment.exe
 
-build Assignment.exe: CXX_EXECUTABLE_LINKER__Assignment_Debug CMakeFiles/Assignment.dir/main.cpp.obj CMakeFiles/Assignment.dir/UnitTests/geoHashTest.cpp.obj
+build Assignment.exe: CXX_EXECUTABLE_LINKER__Assignment_Debug CMakeFiles/Assignment.dir/src/main.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Assignment.dir
