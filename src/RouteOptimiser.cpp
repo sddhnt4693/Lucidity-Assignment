@@ -10,7 +10,7 @@ public:
         vector<vector<double>> distMatrix = getDistanceMatrix(nodes, deliveryGraph);
         initCache(nodes);
         vector<int> optimalPathNodes = getOptimalPathNodes(nodes, distMatrix, orderMap);
-        vector<string> optimalPath = getOptimalPathFromNodes(nodes,optimalPathNodes,reverseMap);
+        vector<string> optimalPath = getOptimalPathFromNodes(optimalPathNodes,reverseMap);
         return optimalPath;
     }
 private:
@@ -86,7 +86,7 @@ private:
         reverse(path.begin(), path.end());
         return path;
     }
-    vector<string> getOptimalPathFromNodes(int nodes, vector<int>path, map<int, string> reverseMap) {
+    vector<string> getOptimalPathFromNodes(vector<int>path, map<int, string> reverseMap) {
         vector<string> result;
 
         for ( int i = 1; i < path.size(); i++ )
