@@ -14,92 +14,93 @@ public:
                                map<int, int> orderMap, map<int, string> reverseMap) {
 
         vector<vector<double>> distMatrix = getDistanceMatrix(nodes, deliveryGraph);
-        for(vector<double> v: distMatrix) {
-            for(double i:v) {
-                cout<<i<<" ";
-            }
-            cout<<endl;
-        }
-        vector<vector<int>> allValidOrderSubset = generateAllValidPaths(nodes, orderMap);
-
-        for(auto v : allValidOrderSubset) {
-            for(int i : v) {
-                cout<<i<<" ";
-            }
-            cout<<endl;
-        }
-
-        vector<int> optimalPathNodes = getOptimalPathNodes(distMatrix, allValidOrderSubset);
-        for(int i : optimalPathNodes) {
-            cout<<i<<" ";
-        }
-        cout<<endl;
-        vector<string> optimalPath = getOptimalPath(optimalPathNodes, reverseMap);
-        for(string s : optimalPath) {
-            cout<<s<<" ";
-        }
-        cout<<endl;
+        initCache(nodes);
+        vector<int> optimalPathNodes = getOptimalPathNodes(nodes, distMatrix, orderMap);
+        vector<string> optimalPath = getOptimalPathFromNodes(nodes,optimalPathNodes,reverseMap);
         return optimalPath;
     }
 private:
-    vector<string> getOptimalPath(vector<int> optimalPathNodes, map<int, string> reverseMap) {
-        vector<string> optimalPath;
-        for(int node : optimalPathNodes) {
-            optimalPath.push_back(reverseMap[node]);
-        }
-        return optimalPath;
-    }
-    vector<int> getOptimalPathNodes(vector<vector<double>>& distMatrix, vector<vector<int>> allValidOrderSubset) {
-        vector<int> ans;
-        long time = INT_MAX;
-        for(vector path : allValidOrderSubset) {
-            long double curTime = distMatrix[0][path[0]];
-            debug3(curTime, path[0], distMatrix[0][path[0]]);
-            for(int i=0;i<path.size()-1;i++) {
-                curTime += distMatrix[path[i]][path[i+1]];
-                debug4(curTime, path[i], path[i+1], distMatrix[path[i]][path[i+1]]);
-            }
-            for(int i : path) {
-                cout<<i<<" ";
-            }
-            cout<<curTime<<endl;
-            if(curTime < time) {
-                ans = path;
-                time = curTime;
-            }
-        }
-        return ans;
-    }
-    vector<vector<int>> generateAllValidPaths(int nodes, map<int, int> orderMap) {
-        vector<vector<int>> ans;
-        vector<int> subset;
-        vector<bool> visited(nodes+1, 0);
-        generatePathRecursively(ans, subset, nodes, visited, orderMap);
-        return ans;
-    }
-    void generatePathRecursively(vector<vector<int>>& ans, vector<int> subset,
-                                 int nodes, vector<bool>& visited, map<int, int> orderMap) {
-        if(subset.size() == nodes-1) {
-            ans.push_back(subset);
-            return;
-        }
-        for(int i=1;i<nodes;i++) {
-            if(visited[i] == true) continue;
-
-            if(orderMap.count(i) != 0) {
-                if(visited[orderMap[i]] == false)
-                    continue;
-            }
-
-            subset.push_back(i);
-            visited[i] = true;
-            generatePathRecursively(ans, subset, nodes, visited, orderMap);
-            visited[i] = false;
-            subset.pop_back();
-        }
-
+    vector<vector<double>>cache;
+    vector<vector<int>>lastEdge;
+    vector<vector<int>> vis;
+    void initCache(int n)
+    {
+        cache.assign(1<<n, vector<double>(n, 1e6));
+        vis.assign(1<<n, vector<int>(n ,0));
+        lastEdge.assign(1 << n, vector<int>(n, -1));
     }
 
+    bool checkBitSet(int val, int bit)
+    {
+        return ( ((1<<bit)&val) );
+    }
+
+    vector<int> getOptimalPathNodes(int nodes, vector<vector<double>> distMatrix,
+                                    map<int, int> orderMap) {
+        for ( int i = 0; i < nodes; i++ ) {
+            cache[1 << i][i] = 0;
+            vis[1 << i][i] = 1;
+        }
+
+        for (int i = 0; i < (1 << nodes); i++) {
+            if ((i & (i - 1)) == 0)
+                continue;
+            for (int j = 0; j < nodes; j++) {
+                //check if jth node is set in current mask
+                if (((1 << j) & i) > 0) {
+                    //remove jth bit from current mask
+                    //if visiting j, then orderMap[j] bit must be set, else make max distance
+                    if (!checkBitSet(i,(1 << orderMap[j])))
+                        continue;
+
+                    int withoutJ = i - (1 << j);
+                    for ( int k = 0; k < nodes; k++ ) {
+                        if (cache[i][j] > cache[withoutJ][k] + distMatrix[k][j])
+                        {
+                            cache[i][j] = cache[withoutJ][k] + distMatrix[k][j];
+                            lastEdge[i][j] = k;
+                        }
+                    }
+                }
+                debug3(i,j,cache[i][j]);
+            }
+
+        }
+
+        double ans = 1e6;
+        int currentVertex = -1;
+        for ( int i = 0; i < nodes; i++ )
+        {
+            if ( ans > cache[(1 << nodes) - 1][i] )
+            {
+                ans = cache[(1 << nodes) - 1][i];
+                currentVertex = i;
+            }
+        }
+        vector<int>path;
+        int mask = (1 << nodes) - 1;
+        while(currentVertex)
+        {
+            path.push_back(currentVertex);
+            int prevVertex = lastEdge[mask][currentVertex];
+            mask -= (1 << currentVertex);
+            currentVertex = prevVertex;
+            if ( !currentVertex )
+            {
+                path.push_back(0);
+                break;
+            }
+        }
+        reverse(path.begin(), path.end());
+        return path;
+    }
+    vector<string> getOptimalPathFromNodes(int nodes, vector<int>path, map<int, string> reverseMap) {
+        vector<string> result;
+
+        for ( int i = 1; i < path.size(); i++ )
+            result.push_back(reverseMap[path[i]]);
+        return result;
+    }
     vector<vector<double>> getDistanceMatrix(int nodes, vector<vector<pair<int, double>>> deliveryGraph) {
         vector<vector<double>> distMatrix(nodes, vector<double>(nodes,0));
         for(int i = 0; i< deliveryGraph.size(); i++){
