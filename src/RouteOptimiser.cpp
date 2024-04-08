@@ -10,6 +10,8 @@ public:
         vector<vector<double>> distMatrix = getDistanceMatrix(nodes, deliveryGraph);
         initCache(nodes);
         vector<int> optimalPathNodes = getOptimalPathNodes(nodes, distMatrix, orderMap);
+
+        cout<<endl;
         vector<string> optimalPath = getOptimalPathFromNodes(nodes, optimalPathNodes, reverseMap);
         return optimalPath;
     }
@@ -41,11 +43,13 @@ private:
                 continue;
             for (int j = 0; j < nodes; j++) {
                 if (((1 << j) & i) > 0) {
-                    if (!checkBitSet(i, (1 << orderMap[j])))
+                    if (!checkBitSet(i, orderMap[j]))
                         continue;
 
                     int withoutJ = i - (1 << j);
                     for (int k = 0; k < nodes; k++) {
+                        if ( !checkBitSet(i,k) || j == k )
+                            continue;
                         if (cache[i][j] > cache[withoutJ][k] + distMatrix[k][j]) {
                             cache[i][j] = cache[withoutJ][k] + distMatrix[k][j];
                             lastEdge[i][j] = k;
