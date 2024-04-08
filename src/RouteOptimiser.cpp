@@ -24,7 +24,7 @@ private:
         lastEdge.assign(1 << n, vector<int>(n, -1));
     }
 
-    bool checkBitSet(int val, int bit)
+    static bool checkBitSet(int val, int bit)
     {
         return ( ((1<<bit)&val) );
     }
