@@ -5,7 +5,7 @@ using namespace std;
 class RouteOptimise {
 public:
     vector<string> getOptimalPath(int nodes, vector<vector<pair<int, double>>> deliveryGraph,
-                               map<int, int> orderMap, map<int, string> reverseMap) {
+                                  map<int, int> orderMap, map<int, string> reverseMap) {
 
         vector<vector<double>> distMatrix = getDistanceMatrix(nodes, deliveryGraph);
         initCache(nodes);
@@ -14,41 +14,48 @@ public:
         return optimalPath;
     }
 private:
-    vector<vector<double>>cache;
+    vector<vector<double>>best;
     vector<vector<int>>lastEdge;
     vector<vector<int>> vis;
     void initCache(int n)
     {
-        cache.assign(1<<n, vector<double>(n, 1e6));
+        best.assign(1<<n, vector<double>(n, 1e6));
         vis.assign(1<<n, vector<int>(n ,0));
         lastEdge.assign(1 << n, vector<int>(n, -1));
     }
 
     static bool checkBitSet(int val, int bit)
     {
-        return ( ((1<<bit)&val) );
+        return ( ((1<<bit)&val) > 0 );
     }
 
     vector<int> getOptimalPathNodes(int nodes, vector<vector<double>> distMatrix,
                                     map<int, int> orderMap) {
-        for ( int i = 0; i < nodes; i++ ) {
-            cache[1 << i][i] = 0;
-            vis[1 << i][i] = 1;
+        best[1][0] = 0;
+        map<int,int>revOrderMap;
+        for ( auto it : orderMap )
+        {
+            revOrderMap[it.second] = it.first;
         }
-
         for (int i = 0; i < (1 << nodes); i++) {
             if ((i & (i - 1)) == 0)
                 continue;
             for (int j = 0; j < nodes; j++) {
-                if (((1 << j) & i) > 0) {
-                    if (!checkBitSet(i,(1 << orderMap[j])))
-                        continue;
+                //check if j is a pre-req of something
+                if ( checkBitSet(i,j) ) {
+                    if ( revOrderMap[j] )
+                    {
+                        if ( checkBitSet(i,revOrderMap[j]) )
+                            continue;
+                    }
 
                     int withoutJ = i - (1 << j);
                     for ( int k = 0; k < nodes; k++ ) {
-                        if (cache[i][j] > cache[withoutJ][k] + distMatrix[k][j])
+                        if ( j == k || !checkBitSet(i,k) )
+                            continue;
+                        if (best[i][j] > best[withoutJ][k] + distMatrix[k][j])
                         {
-                            cache[i][j] = cache[withoutJ][k] + distMatrix[k][j];
+                            best[i][j] = best[withoutJ][k] + distMatrix[k][j];
                             lastEdge[i][j] = k;
                         }
                     }
@@ -61,25 +68,20 @@ private:
         int currentVertex = -1;
         for ( int i = 0; i < nodes; i++ )
         {
-            if ( ans > cache[(1 << nodes) - 1][i] )
+            if ( ans > best[(1 << nodes) - 1][i] )
             {
-                ans = cache[(1 << nodes) - 1][i];
+                ans = best[(1 << nodes) - 1][i];
                 currentVertex = i;
             }
         }
         vector<int>path;
         int mask = (1 << nodes) - 1;
-        while(currentVertex)
+        while(currentVertex != -1)
         {
             path.push_back(currentVertex);
             int prevVertex = lastEdge[mask][currentVertex];
             mask -= (1 << currentVertex);
             currentVertex = prevVertex;
-            if ( !currentVertex )
-            {
-                path.push_back(0);
-                break;
-            }
         }
         reverse(path.begin(), path.end());
         return path;
