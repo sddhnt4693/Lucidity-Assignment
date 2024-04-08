@@ -61,11 +61,15 @@ int main() {
 
     vector<vector<pair<int, double>>> deliveryGraph = geoHash.getGeoHashGraph();
     map<int, int> orderMap = geoHash.prerequisiteMap;
-    map<string, int> encodingMap = geoHash.idMapper;
     map<int, string> reverseMap = geoHash.reverseMapper;
 
     int nodes = 1 + restaurantCount + customerCount;
 
     RouteOptimise routeOptimise;
-    routeOptimise.OptimalPath(nodes, deliveryGraph, orderMap, reverseMap);
+    vector<string> optimalPath = routeOptimise.getOptimalPath(nodes, deliveryGraph, orderMap, reverseMap);
+
+    for(const string& node : optimalPath) {
+        cout<<node<<" ";
+    }
+    cout<<endl;
 }

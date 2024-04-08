@@ -1,16 +1,10 @@
 #include <bits/stdc++.h>
 
-#define debug1(a) cout<<#a<<" = "<<(a)<<endl;
-#define debug2(a,b) cout<<#a<<" = "<<(a)<<", "<<#b<<" = "<<(b)<<endl;
-#define debug3(a,b,c) cout<<#a<<" = "<<(a)<<", "<<#b<<" = "<<(b)<<", "<<#c<<" = "<<(c)<<endl;
-#define debug4(a,b,c,d) cout<<#a<<" = "<<(a)<<", "<<#b<<" = "<<(b)<<", "<<#c<<" = "<<(c)<<", "<<#d<<" = "<<(d)<<endl;
-#define debug5(a,b,c,d,e) cout<<#a<<" = "<<(a)<<", "<<#b<<" = "<<(b)<<", "<<#c<<" = "<<(c)<<", "<<#d<<" = "<<(d)<<", "<<#e<<" = "<<(e)<<endl;
-
 using namespace std;
 
 class RouteOptimise {
 public:
-    vector<string> OptimalPath(int nodes, vector<vector<pair<int, double>>> deliveryGraph,
+    vector<string> getOptimalPath(int nodes, vector<vector<pair<int, double>>> deliveryGraph,
                                map<int, int> orderMap, map<int, string> reverseMap) {
 
         vector<vector<double>> distMatrix = getDistanceMatrix(nodes, deliveryGraph);
@@ -19,10 +13,11 @@ public:
         vector<string> optimalPath = getOptimalPathFromNodes(nodes,optimalPathNodes,reverseMap);
         return optimalPath;
     }
+
 private:
-    vector<vector<double>>cache;
-    vector<vector<int>>lastEdge;
-    vector<vector<int>> vis;
+    vector<vector<double>> cache;
+    vector<vector<int>> lastEdge;
+    vector<vector<int>>  vis;
     void initCache(int n)
     {
         cache.assign(1<<n, vector<double>(n, 1e6));
@@ -30,7 +25,7 @@ private:
         lastEdge.assign(1 << n, vector<int>(n, -1));
     }
 
-    bool checkBitSet(int val, int bit)
+    static bool checkBitSet(int val, int bit)
     {
         return ( ((1<<bit)&val) );
     }
@@ -62,7 +57,6 @@ private:
                         }
                     }
                 }
-                debug3(i,j,cache[i][j]);
             }
 
         }
@@ -94,14 +88,16 @@ private:
         reverse(path.begin(), path.end());
         return path;
     }
-    vector<string> getOptimalPathFromNodes(int nodes, vector<int>path, map<int, string> reverseMap) {
+
+    static vector<string> getOptimalPathFromNodes(int nodes, vector<int>path, map<int, string> reverseMap) {
         vector<string> result;
 
         for ( int i = 1; i < path.size(); i++ )
             result.push_back(reverseMap[path[i]]);
         return result;
     }
-    vector<vector<double>> getDistanceMatrix(int nodes, vector<vector<pair<int, double>>> deliveryGraph) {
+
+    static vector<vector<double>> getDistanceMatrix(int nodes, vector<vector<pair<int, double>>> deliveryGraph) {
         vector<vector<double>> distMatrix(nodes, vector<double>(nodes,0));
         for(int i = 0; i< deliveryGraph.size(); i++){
             for(int j=0;j<deliveryGraph[i].size();j++) {
